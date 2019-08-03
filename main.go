@@ -1,7 +1,10 @@
 package main
 
-import "github.com/gofromzero/i"
+import (
+	"github.com/gofromzero/ii"
+)
 
 func main() {
-	i.HelloGin()
+	// i.HelloGin()
+	ii.StartGin()
 }
