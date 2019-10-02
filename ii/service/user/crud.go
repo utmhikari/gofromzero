@@ -4,14 +4,14 @@ import "github.com/gofromzero/ii/database"
 
 type Form struct {
 	Name string `json:"name"`
-	Age	uint `json:"age"`
+	Age  uint   `json:"age"`
 }
 
 // Create create user on form
 func Create(form Form) error {
 	return database.UserDAO.Create(database.User{
 		Name: form.Name,
-		Age: form.Age,
+		Age:  form.Age,
 	})
 }
 
@@ -24,7 +24,7 @@ func First() (database.User, error) {
 func Update(form Form) error {
 	return database.UserDAO.Update(database.User{
 		Name: form.Name,
-		Age: form.Age,
+		Age:  form.Age,
 	})
 }
 
@@ -32,5 +32,3 @@ func Update(form Form) error {
 func Delete() error {
 	return database.UserDAO.Delete()
 }
-
-

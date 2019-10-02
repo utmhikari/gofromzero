@@ -1,10 +1,11 @@
 package main
 
-import (
-	"github.com/gofromzero/ii"
-)
+import "github.com/gofromzero/iiii"
 
 func main() {
-	// i.HelloGin()
-	ii.StartGin()
+	err := iiii.StartMongo()
+	// err := iiii.RollBack()
+	if err != nil {
+		panic(err)
+	}
 }

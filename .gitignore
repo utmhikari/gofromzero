@@ -1,3 +1,5 @@
-vendor/
-.idea/
+vendor
+.idea
 *.iml
+tmp
+build

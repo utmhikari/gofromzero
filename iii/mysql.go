@@ -56,13 +56,13 @@ func runImage(cli *client.Client) string {
 		ctx,
 		&container.Config{
 			Image: "mysql:latest",
-			Env: []string{"MYSQL_ROOT_PASSWORD", "123456"},
+			Env:   []string{"MYSQL_ROOT_PASSWORD", "123456"},
 		},
 		&container.HostConfig{
 			PortBindings: nat.PortMap{
 				"3306/tcp": []nat.PortBinding{
 					{
-						HostIP: "0.0.0.0",
+						HostIP:   "0.0.0.0",
 						HostPort: "3306",
 					},
 				},
@@ -92,11 +92,11 @@ func runImage(cli *client.Client) string {
 func logImage(cli *client.Client, containerID string) {
 	log.Println("Fetching log on MySQL container...")
 	reader, err := cli.ContainerLogs(ctx, containerID, types.ContainerLogsOptions{
-		ShowStdout:true,
-		ShowStderr:true,
-		Timestamps:true,
-		Follow:true,
-		Details:true,
+		ShowStdout: true,
+		ShowStderr: true,
+		Timestamps: true,
+		Follow:     true,
+		Details:    true,
 	})
 	if err != nil {
 		log.Fatalf("Error while logging image! %s", err.Error())

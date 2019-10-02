@@ -16,4 +16,3 @@ func Error(c *gin.Context, err error, code int) {
 		"err": err.Error(),
 	})
 }
-

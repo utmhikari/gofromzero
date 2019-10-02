@@ -20,7 +20,7 @@ func (*user) Create(c *gin.Context) {
 		return
 	}
 	createErr := service.Create(userForm)
-	if createErr != nil{
+	if createErr != nil {
 		Error(c, createErr, http.StatusBadRequest)
 		return
 	}
@@ -30,7 +30,7 @@ func (*user) Create(c *gin.Context) {
 // Get get the first user
 func (*user) Get(c *gin.Context) {
 	user, err := service.First()
-	if err != nil{
+	if err != nil {
 		Error(c, err, http.StatusNotFound)
 		return
 	}
@@ -41,12 +41,12 @@ func (*user) Get(c *gin.Context) {
 func (*user) Update(c *gin.Context) {
 	var userForm service.Form
 	bindErr := c.ShouldBindJSON(&userForm)
-	if bindErr != nil{
+	if bindErr != nil {
 		Error(c, bindErr, http.StatusForbidden)
 		return
 	}
 	updateErr := service.Update(userForm)
-	if updateErr != nil{
+	if updateErr != nil {
 		Error(c, updateErr, http.StatusBadRequest)
 		return
 	}
@@ -56,7 +56,7 @@ func (*user) Update(c *gin.Context) {
 // Delete delete users
 func (*user) Delete(c *gin.Context) {
 	err := service.Delete()
-	if err != nil{
+	if err != nil {
 		Error(c, err, http.StatusBadRequest)
 		return
 	}

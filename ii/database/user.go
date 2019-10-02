@@ -3,10 +3,10 @@ package database
 type User struct {
 	*DBModel
 	Name string `json:"name"`
-	Age uint `json:"age"`
+	Age  uint   `json:"age"`
 }
 
-type userDAO struct {}
+type userDAO struct{}
 
 var UserDAO userDAO
 

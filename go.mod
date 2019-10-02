@@ -1,6 +1,6 @@
 module github.com/gofromzero
 
-go 1.12
+go 1.13
 
 require (
 	github.com/Microsoft/go-winio v0.4.14 // indirect
@@ -9,6 +9,11 @@ require (
 	github.com/docker/go-connections v0.4.0
 	github.com/docker/go-units v0.4.0 // indirect
 	github.com/gin-gonic/gin v1.4.0
-	github.com/jinzhu/gorm v1.9.10
+	github.com/imdario/mergo v0.3.7 // indirect
+	github.com/jinzhu/gorm v1.9.11
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
+	k8s.io/api v0.0.0-20190927115716-5d581ce610b0
+	k8s.io/apimachinery v0.0.0-20191001195453-082230a5ffdd
+	k8s.io/client-go v0.0.0-20190620085101-78d2af792bab
+	k8s.io/utils v0.0.0-20190923111123-69764acb6e8e // indirect
 )
