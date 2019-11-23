@@ -1,11 +1,19 @@
 package main
 
-import "github.com/gofromzero/iiii"
+import (
+	"github.com/gofromzero/v"
+	"time"
+)
 
 func main() {
-	err := iiii.StartMongo()
-	// err := iiii.RollBack()
+	v.TestServerAsync()
+	go func() {
+		time.Sleep(5 * time.Second)
+		v.TestClient()
+	}()
+	lb, err := v.NewLoadBalancerOnConfig("./v/config.json")
 	if err != nil {
 		panic(err)
 	}
+	lb.Run()
 }

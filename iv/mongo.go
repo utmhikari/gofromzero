@@ -1,4 +1,4 @@
-package iiii
+package iv
 
 import (
 	appsv1 "k8s.io/api/apps/v1"
@@ -19,9 +19,12 @@ func createMongoService(clientset *kubernetes.Clientset) (*v1.Service, error) {
 			Type: "NodePort",
 			Ports: []v1.ServicePort{
 				{
-					Port:       27017,
-					TargetPort: intstr.IntOrString{Type: 0, IntVal: 27017},
-					NodePort:   32017,
+					Port: 27017,
+					TargetPort: intstr.IntOrString{
+						Type:   0,
+						IntVal: 27017,
+					},
+					NodePort: 32017,
 				},
 			},
 			Selector: map[string]string{"role": "mongo"},
@@ -48,17 +51,25 @@ func createMongoStatefulSet(clientset *kubernetes.Clientset) (*appsv1.StatefulSe
 						{
 							Name: "mongo-volume",
 							VolumeSource: v1.VolumeSource{
-								HostPath: &v1.HostPathVolumeSource{Path: "/home/docker/mongo"},
+								HostPath: &v1.HostPathVolumeSource{
+									Path: "/home/docker/mongo",
+								},
 							},
 						},
 					},
 					Containers: []v1.Container{
 						{
-							Name:         "mongo",
-							Image:        "library/mongo:latest",
-							Command:      []string{"mongod", "--replSet", "rs0", "--bind_ip", "0.0.0.0"},
-							Ports:        []v1.ContainerPort{{ContainerPort: 27017}},
-							VolumeMounts: []v1.VolumeMount{{Name: "mongo-volume", MountPath: "/data/db"}},
+							Name:  "mongo",
+							Image: "library/mongo:latest",
+							Command: []string{
+								"mongod", "--replSet", "rs0", "--bind_ip", "0.0.0.0",
+							},
+							Ports: []v1.ContainerPort{
+								{ContainerPort: 27017},
+							},
+							VolumeMounts: []v1.VolumeMount{
+								{Name: "mongo-volume", MountPath: "/data/db"},
+							},
 						},
 					},
 				},
@@ -68,7 +79,10 @@ func createMongoStatefulSet(clientset *kubernetes.Clientset) (*appsv1.StatefulSe
 			},
 		},
 	}
-	return clientset.AppsV1().StatefulSets(defaultNamespace).Create(&statefulSet)
+	return clientset.
+		AppsV1().
+		StatefulSets(defaultNamespace).
+		Create(&statefulSet)
 }
 
 // StartMongo start mongo in kubernetes
@@ -100,14 +114,22 @@ func RollBack() error {
 		return clientErr
 	}
 	log.Println("Deleting mongo statefulset...")
-	statefulErr := clientset.AppsV1().StatefulSets(defaultNamespace).Delete("mongo", &metav1.DeleteOptions{})
+	statefulErr := clientset.
+		AppsV1().
+		StatefulSets(defaultNamespace).
+		Delete("mongo", &metav1.DeleteOptions{})
 	if statefulErr != nil {
-		log.Printf("Error while deleing mongo statefulset! %s\n", statefulErr.Error())
+		log.Printf("Error while deleing mongo statefulset! %s\n",
+			statefulErr.Error())
 	}
 	log.Println("Deleting mongo service...")
-	serviceErr := clientset.CoreV1().Services(defaultNamespace).Delete("mongo", &metav1.DeleteOptions{})
+	serviceErr := clientset.
+		CoreV1().
+		Services(defaultNamespace).
+		Delete("mongo", &metav1.DeleteOptions{})
 	if serviceErr != nil {
-		log.Printf("Error while deleing mongo service! %s\n", serviceErr.Error())
+		log.Printf("Error while deleing mongo service! %s\n",
+			serviceErr.Error())
 	}
 	log.Println("Rolled back mongodb in local kubernetes successfully!")
 	return nil
