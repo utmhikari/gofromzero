@@ -62,24 +62,22 @@ func handler(conn net.Conn, clientID uint, lb *loadBalancer) {
 	mtx.Lock()
 	serverID := lb.SelectServerID()
 	serverAddr := lb.ServerMap[serverID].GetAddr()
+	lb.weighConnect(serverID)
 	mtx.Unlock()
 	f, err := net.DialTimeout(network, serverAddr, dialTimeout)
 	mtx.Lock()
 	if err != nil {
+		lb.weighDisconnect(serverID)
 		log.Printf("Cannot allocate any server for %s!\n", addrString)
 		lb.setInactive(serverID)
 	} else {
 		forwarder = f
 		lb.setActive(serverID)
-		lb.weighConnect(serverID)
 	}
 	mtx.Unlock()
 	lb.PrintServers()
 	if err != nil {
-		if err := conn.Close(); err != nil {
-			log.Printf("Error while closing connection %s! %s\n",
-				addrString, err.Error())
-		}
+		_ = conn.Close()
 		return
 	}
 	// forward data
