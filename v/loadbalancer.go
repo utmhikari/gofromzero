@@ -4,13 +4,18 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"runtime"
 	"sync"
 	"time"
 )
 
 const network = "tcp"
-var dialTimeout = 1 * time.Second
-var mtx sync.Mutex
+
+var (
+	dialTimeout = 3 * time.Second
+	healthCheckInterval = 5 * time.Second
+	mtx sync.Mutex
+)
 
 type loadBalancer struct {
 	Port uint
@@ -18,10 +23,36 @@ type loadBalancer struct {
 	ServerMap map[uint]*Server
 }
 
-func getAddrString(conn net.Conn) string {
-	localAddr := conn.LocalAddr().String()
-	remoteAddr := conn.RemoteAddr().String()
-	return fmt.Sprintf("%s (%s)", localAddr, remoteAddr)
+func (lb *loadBalancer) healthCheck() {
+	for {
+		var wg sync.WaitGroup
+		wg.Add(len(lb.ServerMap))
+		for id, server := range lb.ServerMap {
+			tmpID := id
+			tmpServer := server
+			go func() {
+				defer wg.Done()
+				addr := tmpServer.GetAddr()
+				conn, err := net.DialTimeout(network, addr, dialTimeout)
+				mtx.Lock()
+				if err != nil {
+					log.Printf("Health check failed at server %d (%s): %s\n",
+						tmpID, addr, err.Error())
+					lb.setInactive(tmpID)
+				} else {
+					log.Printf("Health check success at server %d (%s)!",
+						tmpID, addr)
+					lb.setActive(tmpID)
+					defer func() {
+						_ = conn.Close()
+					}()
+				}
+				mtx.Unlock()
+			}()
+		}
+		wg.Wait()
+		time.Sleep(healthCheckInterval)
+	}
 }
 
 func handler(conn net.Conn, clientID uint, lb *loadBalancer) {
@@ -31,7 +62,9 @@ func handler(conn net.Conn, clientID uint, lb *loadBalancer) {
 	mtx.Lock()
 	serverID := lb.SelectServerID()
 	serverAddr := lb.ServerMap[serverID].GetAddr()
+	mtx.Unlock()
 	f, err := net.DialTimeout(network, serverAddr, dialTimeout)
+	mtx.Lock()
 	if err != nil {
 		log.Printf("Cannot allocate any server for %s!\n", addrString)
 		lb.setInactive(serverID)
@@ -75,6 +108,7 @@ func NewLoadBalancerOnConfig(configPath string) (*loadBalancer, error) {
 	}
 	lb.Listener = server
 	log.Printf("Load balancer is ready at %s...\n", addr)
+	go lb.healthCheck()
 	return lb, nil
 }
 
@@ -85,7 +119,9 @@ func (lb *loadBalancer) Run() {
 			log.Printf("Error while closing load balancer! %s\n", err.Error())
 		}
 	}()
-	log.Printf("Launching load balancer!")
+	log.Printf("Load balancer will be launched after 3 seconds...")
+	time.Sleep(3 * time.Second)
+	runtime.GOMAXPROCS(3)
 	var clientID uint
 	for {
 		conn, err := lb.Listener.Accept()
