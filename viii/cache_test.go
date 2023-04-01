@@ -8,7 +8,7 @@ import (
 
 func TestCache(t *testing.T) {
 	k, v := "hello", "world"
-	curCache := Current()
+	var curCache Cache = Current()
 
 	// set & get & delete
 	curCache.Set(k, v)
