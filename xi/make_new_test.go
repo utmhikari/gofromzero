@@ -8,7 +8,7 @@ func TestMake(t *testing.T) {
 }
 
 func TestNoMake(t *testing.T) {
-	var m []int
+	var m [5]int
 	t.Logf("[NoMake] m is %v, len: %v, cap: %v", m, len(m), cap(m))
 }
 
