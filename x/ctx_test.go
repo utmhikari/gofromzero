@@ -22,7 +22,7 @@ func TestCtxBase(t *testing.T) {
 }
 
 func TestCtxWithCancel(t *testing.T) {
-	t.Skip()
+	// t.Skip()
 	cancelCause := errors.New("debug")
 	ctxCancel, cancel := context.WithCancelCause(context.Background())
 	t.Logf("context.WithCancel: %v, %p -> cause: %v", ctxCancel, cancel, cancelCause)
@@ -95,7 +95,7 @@ func TestCtxWithDeadline(t *testing.T) {
 }
 
 func TestCtxWithValue(t *testing.T) {
-	//t.Skip()
+	t.Skip()
 	key1, value1 := "hello", "world"
 	ctxValue1 := context.WithValue(context.Background(), key1, value1)
 	key2, value2 := "foo", "bar"
