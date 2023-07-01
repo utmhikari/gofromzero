@@ -76,6 +76,10 @@ func GetToken(region string, business string) string {
 	if region == "" || business == "" {
 		return ""
 	}
+	// unsupported token
+	if _, ok := mpRegionWaitTime[region]; !ok {
+		return ""
+	}
 	task := newGetTokenTask(region, business)
 	return task.Do()
 }
