@@ -14,6 +14,7 @@ require (
 	github.com/jinzhu/gorm v1.9.11
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible
+	golang.org/x/sync v0.3.0
 	k8s.io/api v0.0.0-20190927115716-5d581ce610b0
 	k8s.io/apimachinery v0.0.0-20191001195453-082230a5ffdd
 	k8s.io/client-go v0.0.0-20190620085101-78d2af792bab
