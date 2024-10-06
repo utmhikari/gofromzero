@@ -21,6 +21,14 @@ func Router() *gin.Engine {
 			user.PUT("", handler.User.Update)
 			user.DELETE("", handler.User.Delete)
 		}
+		debug := v1.Group("/debug")
+		{
+			debug.POST("", handler.Debug.Create)
+			debug.GET("", handler.Debug.Get)
+			debug.PUT("", handler.Debug.Update)
+			debug.PATCH("", handler.Debug.Update)
+			debug.DELETE("", handler.Debug.Delete)
+		}
 	}
 	return r
 }

@@ -123,6 +123,8 @@ func TestBlockingChannel(t *testing.T) {
 	//	launchSingleProducer()
 	//}()
 
+	time.RFC3339
+
 	wg.Add(1)
 	go func() {
 		defer wg.Done()

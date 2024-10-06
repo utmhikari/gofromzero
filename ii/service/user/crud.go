@@ -3,8 +3,8 @@ package user
 import "github.com/gofromzero/ii/database"
 
 type Form struct {
-	Name string `json:"name"`
-	Age  uint   `json:"age"`
+	Name string `json:"name" query:"name"`
+	Age  uint   `json:"age" query:"name"`
 }
 
 // Create create user on form
